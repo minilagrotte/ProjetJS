@@ -4,18 +4,19 @@ var recherche_courante_news=[]; // tableau d'objets de type resultats (avec titr
 
 function ajouter_recherche()
 {
+	var elem = find
 
 }
 
 function supprimer_recherche(e)
-{ 
+{
 
 
 }
 
 
 function selectionner_recherche(e)
-{ 
+{
 
 }
 
@@ -28,37 +29,25 @@ function init()
 
 function rechercher_nouvelles()
 {
-	
-	
+
+
 }
 
 
 function maj_resultats(res)
 {
 
-	
+
 }
 
 
 function sauver_nouvelle(e)
 {
-	
+
 }
 
 
 function supprimer_nouvelle(e)
 {
-	
+
 }
-
-
-
-
-
-	
-
-
-
-
-
-
