@@ -38,7 +38,8 @@ function supprimer_recherche(e)
 
 function selectionner_recherche(e)
 {
-	console.log(e);
+	recherche_courante = e.innerText;
+	document.getElementById("zone_saisie").value = e.innerText;
 }
 
 
