@@ -4,7 +4,6 @@ var recherche_courante_news=[]; // tableau d'objets de type resultats (avec titr
 
 function ajouter_recherche()
 {
-
 	var elem = document.getElementById("zone_saisie");
 	var recherche = document.getElementById("recherches-stockees");
 	var paragraphe = document.createElement('p');
@@ -23,10 +22,12 @@ function ajouter_recherche()
 	paragraphe.appendChild(im);
 	recherche.appendChild(paragraphe);
 	recherches.push(label.innerText);
+	//nouveauCookie('recherches',label.innerText,1000);
 }
 
 function supprimer_recherche(e)
 {
+
 	var parent = e.parentElement;
 	var i = recherches.indexOf(parent.firstChild.innerText);
 	recherches.splice(i,1);
@@ -44,22 +45,16 @@ function selectionner_recherche(e)
 
 function init()
 {
-	let recherches = [];
-	recherches = document.cookie.split("; ");
-	console.log("Liste de vos cookies actuels : "+recherches);
+	let cookies = document.cookie.split("; ");
+	console.log("Liste de vos cookies actuels : "+cookies);
 
-	let boutonsLibres = document.getElementsByClassName("bouton_simple bouton_libre");
-
-	for(let c = 0; c < recherches.length; c++) {
+	for(let c = 0; c < cookies.length; c++) {
 			let cookieCourant = " ";
-			cookieCourant = recherches[c].split("=");
-
-			for (let b = 0; b < boutonsLibres.length; b++) {
-				if (cookieCourant[0] == boutonsLibres[b].id){
-					boutonsLibres[b].value = cookieCourant[1];
-					boutonsLibres[b].onclick = cookieCourant[1];
-				}
-			}
+			cookieCourant = cookies[c].split("=");
+			recherches.push(cookieCourant[1]);
+	}
+	for (var i = 0; i < recherches.length; i++) {
+		ajouter_recherche(recherches[i]);
 	}
 }
 
@@ -98,7 +93,7 @@ function nouveauCookie(nom,valeur,jours) {
 			date.setTime(dateExpiration);
 			let valeurExpiration = "; expires="+date.toGMTString();
 		} else { // Si le nombre de jours n'est pas renseigné
-			let valeurExpiration = ""; // valeurExpiration est nulle
+			let valeurExpiration = " "; // valeurExpiration est nulle
 		}
-		document.cookie = nom+"="+valeur+valeurExpiration+"; path=/";
+		//document.cookie = nom+"="+valeur+valeurExpiration+"; path=/";
 }
