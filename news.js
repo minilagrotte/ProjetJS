@@ -133,5 +133,5 @@ function nouveauCookie(nom,valeur,jours) {
 		} else { // Si le nombre de jours n'est pas renseigné
 			let valeurExpiration = " "; // valeurExpiration est nulle
 		}
-		//document.cookie = nom+"="+valeur+valeurExpiration+"; path=/";
+		//document.cookie = nom+"="+valeur+valeurExpiration+"; path=/";*/
 }
