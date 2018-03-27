@@ -170,7 +170,7 @@ function initCookieRecherches() {
 	var cookies = document.cookie.split('=')[1];
 	var lesRecherchesStockees = JSON.parse(cookies);
 
-	for (var i = 0; i < truc.length; i++) {
+	for (var i = 0; i < lesRecherchesStockees.length; i++) {
 		recherches.push(lesRecherchesStockees[i]);
 	}
 }
