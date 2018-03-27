@@ -1,6 +1,7 @@
 var recherches=[];//tableau contenant des chaines de caracteres correspondant aux recherches stockees
 var recherche_courante;// chaine de caracteres correspondant a la recherche courante
 var recherche_courante_news=[]; // tableau d'objets de type resultats (avec titre, date et url)
+var jours = 1000;
 
 function ajouter_recherche()
 {
@@ -22,7 +23,8 @@ function ajouter_recherche()
 	paragraphe.appendChild(im);
 	recherche.appendChild(paragraphe);
 	recherches.push(label.innerText);
-	//nouveauCookie('recherches',label.innerText,1000);
+	console.log("Ajout dans le cookie 'recherches' la valeur : "+label.innerText);
+	MAJCookieRecherches();
 }
 
 function supprimer_recherche(e)
@@ -45,6 +47,26 @@ function selectionner_recherche(e)
 
 function init()
 {
+	initCookieRecherches();
+	var recherche = document.getElementById("recherches-stockees");
+
+	for (var i = 0; i < recherches.length; i++) {
+		var paragraphe = document.createElement('p');
+		paragraphe.class = 'titre-recherche';
+
+		var label = document.createElement('label');
+		label.innerText = recherches[i];
+		label.setAttribute('onclick','selectionner_recherche(this)');
+
+		var im = document.createElement('img');
+		im.src = "croix30.jpg";
+		im.class = 'icone-croix';
+		im.setAttribute('onclick','supprimer_recherche(this)');
+
+		paragraphe.appendChild(label);
+		paragraphe.appendChild(im);
+		recherche.appendChild(paragraphe);
+	}
 }
 
 
@@ -124,14 +146,31 @@ function supprimer_nouvelle(e)
 
 //////////Nouvelles Fonctions//////////
 
-function nouveauCookie(nom,valeur,jours) {
-		/*if (jours != 0) { // Si le nombre de jours est renseigné
-			let date = new Date(); // Création d'un nouvel objet Date
-			let dateExpiration = date.getTime()+(jours*24*60*60*1000); // Création date expiration
-			date.setTime(dateExpiration);
-			let valeurExpiration = "; expires="+date.toGMTString();
+/*Met à jour le cookie recherches*/
+function MAJCookieRecherches() {
+
+		if (jours != 0) { // Si le nombre de jours est renseigné
+				let date = new Date(); // Création d'un nouvel objet Date
+				let dateExpiration = date.getTime()+(jours*24*60*60*1000); // Création date expiration
+				date.setTime(dateExpiration);
+				var valeurExpiration = "; expires="+date.toGMTString();
 		} else { // Si le nombre de jours n'est pas renseigné
-			let valeurExpiration = " "; // valeurExpiration est nulle
+				var valeurExpiration = ""; // valeurExpiration est nulle
 		}
-		//document.cookie = nom+"="+valeur+valeurExpiration+"; path=/";*/
+
+		let jsonRecherches = JSON.stringify(recherches);
+		document.cookie = "recherches="+jsonRecherches+valeurExpiration;
+
+}
+
+/*Initialise le cookie recherches*/
+function initCookieRecherches() {
+
+	console.log("Liste de vos cookies actuels : "+document.cookie);
+	var cookies = document.cookie.split('=')[1];
+	var lesRecherchesStockees = JSON.parse(cookies);
+
+	for (var i = 0; i < truc.length; i++) {
+		recherches.push(lesRecherchesStockees[i]);
+	}
 }
