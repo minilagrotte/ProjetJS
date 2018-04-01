@@ -134,6 +134,19 @@ function sauver_nouvelle(e)
 {
 	e.firstChild.src = "disk15.jpg";
 	e.setAttribute('onclick','supprimer_nouvelle(this)');
+	var nouvelle = new Nouvelle(e.parentElement.firstChild.text,e.parentElement.childNodes[1].innerText,e.parentElement.firstChild.href);
+	var i = 0;
+	var trouver = false;
+	while (!trouver && i<recherche_courante_news.length) {
+		if (recherche_courante_news[i].nom == nouvelle.nom) {
+			trouver = true;
+		}
+		i++;
+	}
+	if (!trouver) {
+		recherche_courante_news.push(nouvelle);
+	}
+	console.log(recherche_courante_news);
 }
 
 
@@ -141,7 +154,21 @@ function supprimer_nouvelle(e)
 {
 	e.firstChild.src = "horloge15.jpg";
 	e.setAttribute('onclick','sauver_nouvelle(this)');
-
+	var nouvelle = new Nouvelle(e.parentElement.firstChild.text,e.parentElement.childNodes[1].innerText,e.parentElement.firstChild.href);
+	var i = 0;
+	var trouver = false;
+	while (!trouver && i<recherche_courante_news.length) {
+		if (recherche_courante_news[i].nom == nouvelle.nom) {
+			trouver = true;
+		}
+		if (!trouver) {
+			i++;
+		}
+	}
+	if (trouver) {
+		recherche_courante_news.splice(i,1);
+	}
+	console.log(recherche_courante_news);
 }
 
 //////////Nouvelles Fonctions//////////
@@ -174,3 +201,10 @@ function initCookieRecherches() {
 		recherches.push(lesRecherchesStockees[i]);
 	}
 }
+
+class Nouvelle {
+  constructor(nom,date,url) {
+    this.nom = nom;
+    this.date = date;
+    this.url = url;
+  }
