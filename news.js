@@ -24,6 +24,8 @@ function ajouter_recherche()
 	recherche.appendChild(paragraphe);
 	recherches.push(label.innerText);
 	console.log("Ajout dans le cookie 'recherches' la valeur : "+label.innerText);
+	var r = new Recherche(elem.value,recherche_courante_news);
+	var j = JSON.stringify(r);
 	MAJCookieRecherches();
 }
 
@@ -35,6 +37,7 @@ function supprimer_recherche(e)
 	recherches.splice(i,1);
 	var elem = document.getElementById("recherches-stockees");
 	elem.removeChild(parent);
+	MAJCookieRecherches();
 }
 
 
@@ -74,7 +77,6 @@ function rechercher_nouvelles()
 {
 	var saisie = document.getElementById("zone_saisie");
 	var rech = saisie.value;
-	saisie.value = "";
 	var dis =document.getElementById("wait");
 	dis.style.display = "block";
 	ajax_get_request(maj_resultats,"search.php?data="+rech,true);
@@ -146,7 +148,6 @@ function sauver_nouvelle(e)
 	if (!trouver) {
 		recherche_courante_news.push(nouvelle);
 	}
-	console.log(recherche_courante_news);
 }
 
 
@@ -173,7 +174,7 @@ function supprimer_nouvelle(e)
 
 //////////Nouvelles Fonctions//////////
 
-/*Met à jour le cookie recherches*/
+/*Met à jour le cookie et les recherches*/
 function MAJCookieRecherches() {
 
 		if (jours != 0) { // Si le nombre de jours est renseigné
@@ -187,6 +188,20 @@ function MAJCookieRecherches() {
 
 		let jsonRecherches = JSON.stringify(recherches);
 		document.cookie = "recherches="+jsonRecherches+valeurExpiration;
+
+}
+
+function MajCookiesRecherchesNew(e) {
+	if (jours != 0) { // Si le nombre de jours est renseigné
+			let date = new Date(); // Création d'un nouvel objet Date
+			let dateExpiration = date.getTime()+(jours*24*60*60*1000); // Création date expiration
+			date.setTime(dateExpiration);
+			var valeurExpiration = "; expires="+date.toGMTString();
+	} else { // Si le nombre de jours n'est pas renseigné
+			var valeurExpiration = ""; // valeurExpiration est nulle
+	}
+	document.cookie = "recherchesNews="+e+valeurExpiration;
+
 
 }
 
@@ -208,3 +223,11 @@ class Nouvelle {
     this.date = date;
     this.url = url;
   }
+}
+
+class Recherche{
+	constructor(nom,nouvelles){
+		this.recherche = nom;
+		this.nouvelles = nouvelles;
+	}
+}
