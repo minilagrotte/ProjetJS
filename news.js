@@ -22,22 +22,34 @@ function ajouter_recherche()
 	paragraphe.appendChild(label);
 	paragraphe.appendChild(im);
 	recherche.appendChild(paragraphe);
-	recherches.push(label.innerText);
-	console.log("Ajout dans le cookie 'recherches' la valeur : "+label.innerText);
 	var r = new Recherche(elem.value,recherche_courante_news);
-	var j = JSON.stringify(r);
-	MAJCookieRecherches();
+	recherches.push(r);
+	/*
+	var jsonRecherches = JSON.stringify(recherches);
+	setCookie("recherches",jsonRecherches,jours);
+	*/
+	localStorage.setItem("recherches",JSON.stringify(recherches));
 }
 
 function supprimer_recherche(e)
 {
-
+	/*
+	var cookieRech = getCookie("recherches");
+	console.log(cookieRech);
+	*/
+	var local = JSON.parse(localStorage.getItem("recherches"));
 	var parent = e.parentElement;
-	var i = recherches.indexOf(parent.firstChild.innerText);
-	recherches.splice(i,1);
+	var i = local.indexOf(parent.firstChild.innerText);
+	local.splice(i,1);
 	var elem = document.getElementById("recherches-stockees");
 	elem.removeChild(parent);
-	MAJCookieRecherches();
+	recherches = local;
+	localStorage.setItem("recherches",JSON.stringify(recherches));
+	var local = JSON.parse(localStorage.getItem("recherches"));
+	/*
+	var jsonRecherches = JSON.stringify(recherches);
+	setCookie("recherches",jsonRecherches,jours);
+	*/
 }
 
 
@@ -50,7 +62,10 @@ function selectionner_recherche(e)
 
 function init()
 {
+	/*
 	initCookieRecherches();
+	*/
+	recherches = JSON.parse(localStorage.getItem("recherches"));
 	var recherche = document.getElementById("recherches-stockees");
 
 	for (var i = 0; i < recherches.length; i++) {
@@ -58,7 +73,9 @@ function init()
 		paragraphe.class = 'titre-recherche';
 
 		var label = document.createElement('label');
-		label.innerText = recherches[i];
+
+		label.innerText = recherches[i].recherche;
+
 		label.setAttribute('onclick','selectionner_recherche(this)');
 
 		var im = document.createElement('img');
@@ -70,6 +87,7 @@ function init()
 		paragraphe.appendChild(im);
 		recherche.appendChild(paragraphe);
 	}
+
 }
 
 
@@ -169,13 +187,12 @@ function supprimer_nouvelle(e)
 	if (trouver) {
 		recherche_courante_news.splice(i,1);
 	}
-	console.log(recherche_courante_news);
 }
 
 //////////Nouvelles Fonctions//////////
 
 /*Met à jour le cookie et les recherches*/
-function MAJCookieRecherches() {
+/*function MAJCookieRecherches() {
 
 		if (jours != 0) { // Si le nombre de jours est renseigné
 				let date = new Date(); // Création d'un nouvel objet Date
@@ -189,21 +206,7 @@ function MAJCookieRecherches() {
 		let jsonRecherches = JSON.stringify(recherches);
 		document.cookie = "recherches="+jsonRecherches+valeurExpiration;
 
-}
-
-function MajCookiesRecherchesNew(e) {
-	if (jours != 0) { // Si le nombre de jours est renseigné
-			let date = new Date(); // Création d'un nouvel objet Date
-			let dateExpiration = date.getTime()+(jours*24*60*60*1000); // Création date expiration
-			date.setTime(dateExpiration);
-			var valeurExpiration = "; expires="+date.toGMTString();
-	} else { // Si le nombre de jours n'est pas renseigné
-			var valeurExpiration = ""; // valeurExpiration est nulle
-	}
-	document.cookie = "recherchesNews="+e+valeurExpiration;
-
-
-}
+}*/
 
 /*Initialise le cookie recherches*/
 function initCookieRecherches() {
