@@ -8,7 +8,13 @@ class Modele {
     this.recherche_courante = "" ;
     this.recherche_courante_news = [];
     this.jours = 1000;
-    this.motsAutocompletion= ['bonjour','aurevoir'];
+    if (localStorage.getItem('motsAutocompletion')) {
+      this.motsAutocompletion = JSON.parse(localStorage.getItem('motsAutocompletion'));
+    }else{
+      this.motsAutocompletion = [];
+    }
+    console.log("Mots disponibles pour l'autocomplétion :")
+    console.log(this.motsAutocompletion);
   }
 
 
@@ -98,7 +104,7 @@ class Modele {
         if (this.recherches[i].recherche == e) {
           trouver = true;
         }else{
-          i++
+          i++;
         }
       }
       this.recherches.splice(i,1);
@@ -118,5 +124,23 @@ class Modele {
     }
     this.recherche_courante_news = this.recherches[i].nouvelles;
     return this.recherches[i];
+  }
+
+  setMotsAutocompletion(mot){
+    if(mot != ""){
+      let trouver = false;
+      for (var i = 0; i < this.motsAutocompletion.length; i++) {
+        if (this.motsAutocompletion[i] == mot){
+            trouver = true;
+        }
+      }
+
+      if (!trouver){
+        this.motsAutocompletion.push(mot);
+        localStorage.setItem("motsAutocompletion",JSON.stringify(this.motsAutocompletion));
+        console.log("Ajout du mot "+mot+ " dans 'motsAutocompletion'");
+        console.log("'motsAutocompletion' vaut maintenant : "+this.motsAutocompletion);
+      }
+    }
   }
 }

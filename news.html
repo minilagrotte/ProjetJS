@@ -13,7 +13,7 @@
 		</div>
 		<h3 class="titre">nouvelle recherche</h3>
 		<div id="nouvelle-recherche">
-			<input type="text" name="zone_saisie" id="zone_saisie"/>
+			<input type="text" name="zone_saisie" id="zone_saisie" onkeyup="autocompletion (this.value)" onkeypress="if (event.keyCode == 13 && saisie.value != '') rechercher_nouvelles()"/>
 			<img class="icone-disk" src="disk30.jpg" onclick="ajouter_recherche()" />
 			<BR/>
 			<input type="button" value="OK" onclick="rechercher_nouvelles()"/>
@@ -29,7 +29,7 @@
     <script src="jquery.cookie.js"></script>
 	<script src="util.js"></script>
 	<script src="Nouvelle.js"></script>
-	<script src="Recherche"></script>
+	<script src="Recherche.js"></script>
 	<script src="Modele.js"></script>
 	<script src="Vue.js"></script>
 	<script src="Controleur.js"></script>

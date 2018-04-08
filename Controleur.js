@@ -2,7 +2,9 @@ var recherches=[];//tableau contenant des chaines de caracteres correspondant au
 var recherche_courante;// chaine de caracteres correspondant a la recherche courante
 var recherche_courante_news=[]; // tableau d'objets de type resultats (avec titre, date et url)
 var jours = 1000;
-var motsAutocompletion = ['bonjour','aurevoir']; //pour test sinon version finale il sera vide
+var motsAutocompletion =[];
+var saisie = document.getElementById('zone_saisie');
+var saisiel = document.getElementById('zone_saisiel');
 
 var modele = new Modele();
 var vue = new Vue();
@@ -65,10 +67,7 @@ function rechercher_nouvelles()
     modele.ajax_get_request(maj_resultats,"search.php?data="+rech,true);
 
     //Ajoute recherche dans la liste pour l'autocomplétion
-    /*
-    if (!mo){
-
-    }*/
+    modele.setMotsAutocompletion(saisie.value);
 }
 
 function maj_resultats(res)
@@ -95,13 +94,17 @@ function supprimer_nouvelle(e)
 
 function autocompletion (recherche){
 
+let propositions = document.getElementById('tabAutocompletion');
+propositions.innerHTML = "";
 
     if (recherche != ""){
-        for (var i = 0; i < motsAutocompletion.length; i++) {
-            if (motsAutocompletion[i].match(recherche)){
+        for (var i = 0; i < modele.motsAutocompletion.length; i++) {
+            if (modele.motsAutocompletion[i].match(recherche)){
                 let mot = document.createElement('button');
-                mot.value = motsAutocompletion[i];
-                document.getElementById('tabAutocompletion').appendChild(mot);
+                let motCourant = modele.motsAutocompletion[i];
+                mot.innerHTML = motCourant;
+                propositions.appendChild(mot);
+                mot.onclick = function(){saisie.value = motCourant;}
             };
         }
     }
