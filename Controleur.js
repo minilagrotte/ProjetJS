@@ -93,12 +93,13 @@ function supprimer_nouvelle(e)
 
 function autocompletion (recherche){
 
-    console.log(this);
+    var listeMotsAutocompletions = modele.getMotsAutocompletion();
     if (recherche != ""){
-      var a = modele.getMotsAutocompletion();
-      if (a.length != 0) {
-        vue.autocompletion(a,recherche);
+      if (listeMotsAutocompletions.length != 0) {
+        vue.autocompletion(listeMotsAutocompletions,recherche);
       }
+    } else {
+      vue.autocompletion(listeMotsAutocompletions,"");
     }
 
 }
