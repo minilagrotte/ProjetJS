@@ -64,7 +64,7 @@ function rechercher_nouvelles()
     modele.remise_a_zeroRechercheNews();
     modele.ajax_get_request(maj_resultats,"search.php?data="+rech,true);
     var value = this.vue.getValue();
-    
+
     //Ajoute recherche dans la liste pour l'autocomplétion
     modele.setMotsAutocompletion(value);
 }
@@ -93,10 +93,11 @@ function supprimer_nouvelle(e)
 
 function autocompletion (recherche){
 
+    console.log(this);
     if (recherche != ""){
-      var a = this.modele.getMotsAutocompletion();
+      var a = modele.getMotsAutocompletion();
       if (a.length != 0) {
-        this.vue.autocompletion(a,recherche);
+        vue.autocompletion(a,recherche);
       }
     }
 
