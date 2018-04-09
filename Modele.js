@@ -1,23 +1,24 @@
 class Modele {
   constructor() {
-    if (localStorage.getItem('recherches')) {
-      this.recherches = JSON.parse(localStorage.getItem('recherches'));
-    }else{
-      this.recherches = [] ;
+                                        //////Initialisation des Attributs de l'objet
+    this.local = localStorage;                  // Pour le stockage localStorage
+    this.recherche_courante = "" ;              // La recherche taper dans la barre de saisie
+    this.recherche_courante_news = [];          // Les recherche que l'utilisateur souhaite garder
+    this.jours = 1000;                          // nb de jours que le cookies est gardé
+    this.recherches = this.getStorage('recherches');    //recupere les objets Recherche
+    this.motsAutocompletion = this.getStorage('motsAutocompletion');  //recupere la liste des mots déjà taper
+
+  }
+              // Recupère un Liste d'objet contenu dans le localStorage à partir de sa clé (chaine de caractère) : rech
+  getStorage(rech){
+    var recup = [];
+    if (this.local.getItem(rech)) { //S'il n'a rien dans le local de la clé renvoyer une Liste vide
+      recup = JSON.parse(this.local.getItem(rech));
     }
-    this.recherche_courante = "" ;
-    this.recherche_courante_news = [];
-    this.jours = 1000;
-    if (localStorage.getItem('motsAutocompletion')) {
-      this.motsAutocompletion = JSON.parse(localStorage.getItem('motsAutocompletion'));
-    }else{
-      this.motsAutocompletion = [];
-    }
-    console.log("Mots disponibles pour l'autocomplétion :")
-    console.log(this.motsAutocompletion);
+    return recup;
   }
 
-
+            // Remet a zero la liste de recherche_courante
   remise_a_zeroRechercheNews(){
     this.recherche_courante_news = [] ;
   }
@@ -28,7 +29,7 @@ class Modele {
   setRecherche_courante(r){
     this.recherche_courante = r ;
   }
-
+                                      // Récupère la réponse PHP puis appel la fonction correspondante
   ajax_get_request(callback,url,sync){
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
@@ -39,41 +40,38 @@ class Modele {
     xhr.open("GET",url,sync);
     xhr.send();
   }
-
+                            // Ajoute une nouvelle au recherche_courante_news, si cette nouvelle n'est pas déjà dedans
   sauver_nouvelle(e){
     var nouvelle = new Nouvelle(e.parentElement.firstChild.text,e.parentElement.childNodes[1].innerText,e.parentElement.firstChild.href);
     var i = 0;
     var trouver = false;
-    while (!trouver && i<this.recherche_courante_news.length) {
-        if (this.recherche_courante_news[i].titre == nouvelle.titre) {
+    while (!trouver && i<this.recherche_courante_news.length){
+        if (this.recherche_courante_news[i].titre == nouvelle.titre) {  // Nouvelle trouvé : sortir de la boucle
             trouver = true;
         }
         i++;
     }
-    if (!trouver) {
+    if (!trouver) {                                                     // Si on ne la pas trouver, l'ajouter
         this.recherche_courante_news.push(nouvelle);
     }
   }
 
-  supprimer_nouvelle(e){
+  supprimer_nouvelle(e){                    // Supprime la nouvelle si elle est contenu dans recherche_courante_news
     var nouvelle = new Nouvelle(e.parentElement.firstChild.text,e.parentElement.childNodes[1].innerText,e.parentElement.firstChild.href);
     var i = 0;
     var trouver = false;
-    console.log(this.recherche_courante_news);
-    console.log(this.recherche_courante);
     while (!trouver && i<this.recherche_courante_news.length) {
         if (this.recherche_courante_news[i].titre == nouvelle.titre) {
             trouver = true;
-        }
-        if (!trouver) {
-            i++;
+        }else{
+          i++;
         }
     }
     if (trouver) {
         this.recherche_courante_news.splice(i,1);
     }
   }
-
+                // Ajoute une recherche si non presente dans le storage
   ajouter_recherche(){
     var i =0;
     var trouver = false;
@@ -82,21 +80,22 @@ class Modele {
         if (this.recherches[i].recherche == this.recherche_courante) {
           trouver = true;
           this.recherches[i].nouvelles = this.recherche_courante_news;
+        }else{
+          i++;
         }
-        i++;
       }
       if (!trouver) {
         var r = new Recherche(this.recherche_courante,this.recherche_courante_news);
         this.recherches.push(r);
       }
-      localStorage.setItem("recherches",JSON.stringify(this.recherches));
+      this.local.setItem("recherches",JSON.stringify(this.recherches));
     }else{
       trouver = true;
     }
 
     return trouver ;
   }
-
+            // Supprime une recherche si présente dans le Storage
   supprimer_recherche(e){
       var i = 0 ;
       var trouver = false;
@@ -107,10 +106,13 @@ class Modele {
           i++;
         }
       }
-      this.recherches.splice(i,1);
-      localStorage.setItem("recherches",JSON.stringify(this.recherches));
-  }
+      if (trouver) {
+        this.recherches.splice(i,1);
+        this.local.setItem("recherches",JSON.stringify(this.recherches));
+      }
 
+  }
+          // Selectionne une recherche par son nom et retourne sa liste de nouvelle
   selectionner_recherche(e){
     this.recherche_courante = e;
     var i = 0;
@@ -122,27 +124,32 @@ class Modele {
         i++;
       }
     }
-    this.recherche_courante_news = this.recherches[i].nouvelles;
-    return this.recherches[i];
+    if (!trouver) {                                   // Si Non trouver alors les recherche_courante_news sont vide et
+      this.recherche_courante_news = [];              // on retourne une liste vide
+      return [];
+    }else{                                            //Sinon
+      this.recherche_courante_news = this.recherches[i].nouvelles; // les recherche_courante_news prennent pour valeur les nouvelles de la recherche
+      return this.recherches[i];                        // on retourne la liste de nouvelle asocier a la recherche
+    }
+
   }
 
+                              // ajout au mots completion, le nouveau mot a ajouter s'il n'est pas déjà présent
   setMotsAutocompletion(mot){
     if(mot != ""){
       let trouver = false;
       var i = 0;
       while(i<this.motsAutocompletion.length && !trouver) {
-        if (this.motsAutocompletion[i] == mot){
-            trouver = true;
+        if (this.motsAutocompletion[i] == mot){           // le mot est déjà dans le Storage donc on sort de la boucle et
+            trouver = true;                               // on ne l'ajoute pas
         }else{
           i++;
         }
       }
 
-      if (!trouver){
+      if (!trouver){                                    // Si n'est pas trouver , on l'ajoute puis mise a jour du STORAGE
         this.motsAutocompletion.push(mot);
-        localStorage.setItem("motsAutocompletion",JSON.stringify(this.motsAutocompletion));
-        console.log("Ajout du mot "+mot+ " dans 'motsAutocompletion'");
-        console.log("'motsAutocompletion' vaut maintenant : "+this.motsAutocompletion);
+        this.local.setItem("motsAutocompletion",JSON.stringify(this.motsAutocompletion));
       }
     }
   }
