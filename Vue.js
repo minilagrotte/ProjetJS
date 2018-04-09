@@ -1,6 +1,6 @@
 class Vue {
   constructor() {
-
+    this.saisie = document.getElementById('zone_saisie');
   }
 
   afficherRecherchesStocker(recherches){
@@ -140,5 +140,29 @@ class Vue {
   changerRecherche(e){
     document.getElementById("zone_saisie").value = e;
   }
+
+  getValue(){
+    return this.saisie.value;
+  }
+
+  setValue(mot){
+    this.saisie.value = mot;
+  }
+
+  autocompletion(motsAutocompletion,recherche){
+    let propositions = document.getElementById('tabAutocompletion');
+    propositions.innerHTML = "";
+    for (var i = 0; i < motsAutocompletion.length; i++) {
+        if (motsAutocompletion[i].match(recherche)){
+            let mot = document.createElement('button');
+            let motCourant = motsAutocompletion[i];
+            let saisie = this.getValue();
+            mot.innerHTML = motCourant;
+            propositions.appendChild(mot);
+            mot.setAttribute("onclick",'changerSaisie("'+motCourant+'")');
+        };
+    }
+  }
+
 
 }

@@ -3,8 +3,6 @@ var recherche_courante;// chaine de caracteres correspondant a la recherche cour
 var recherche_courante_news=[]; // tableau d'objets de type resultats (avec titre, date et url)
 var jours = 1000;
 var motsAutocompletion =[];
-var saisie = document.getElementById('zone_saisie');
-var saisiel = document.getElementById('zone_saisiel');
 
 var modele = new Modele();
 var vue = new Vue();
@@ -65,9 +63,10 @@ function rechercher_nouvelles()
     modele.setRecherche_courante(rech);
     modele.remise_a_zeroRechercheNews();
     modele.ajax_get_request(maj_resultats,"search.php?data="+rech,true);
-
+    var value = this.vue.getValue();
+    
     //Ajoute recherche dans la liste pour l'autocomplétion
-    modele.setMotsAutocompletion(saisie.value);
+    modele.setMotsAutocompletion(value);
 }
 
 function maj_resultats(res)
@@ -94,21 +93,17 @@ function supprimer_nouvelle(e)
 
 function autocompletion (recherche){
 
-let propositions = document.getElementById('tabAutocompletion');
-propositions.innerHTML = "";
-
     if (recherche != ""){
-        for (var i = 0; i < modele.motsAutocompletion.length; i++) {
-            if (modele.motsAutocompletion[i].match(recherche)){
-                let mot = document.createElement('button');
-                let motCourant = modele.motsAutocompletion[i];
-                mot.innerHTML = motCourant;
-                propositions.appendChild(mot);
-                mot.onclick = function(){saisie.value = motCourant;}
-            };
-        }
+      var a = this.modele.getMotsAutocompletion();
+      if (a.length != 0) {
+        this.vue.autocompletion(a,recherche);
+      }
     }
 
+}
+
+function changerSaisie(mot){
+  this.vue.setValue(mot);
 }
 
 /*Met à jour le cookie et les recherches*/

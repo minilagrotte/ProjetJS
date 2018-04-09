@@ -129,9 +129,12 @@ class Modele {
   setMotsAutocompletion(mot){
     if(mot != ""){
       let trouver = false;
-      for (var i = 0; i < this.motsAutocompletion.length; i++) {
+      var i = 0;
+      while(i<this.motsAutocompletion.length && !trouver) {
         if (this.motsAutocompletion[i] == mot){
             trouver = true;
+        }else{
+          i++;
         }
       }
 
@@ -142,5 +145,9 @@ class Modele {
         console.log("'motsAutocompletion' vaut maintenant : "+this.motsAutocompletion);
       }
     }
+  }
+
+  getMotsAutocompletion(){
+    return this.motsAutocompletion;
   }
 }
